@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'irfanm/belajar-php-mvc',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'name' => 'irfanm/php-login-management',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'e8d5d5ba812b0d2804fe8add7bb99a38d997338f',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'irfanm/belajar-php-mvc' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+        'irfanm/php-login-management' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'e8d5d5ba812b0d2804fe8add7bb99a38d997338f',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

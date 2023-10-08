@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"Irfanm\\Belajar\\PHP\\MVC\\Config\\DatabaseTest::testGetConnection":0.004,"Irfanm\\Belajar\\PHP\\MVC\\Config\\DatabaseTest::testGetConnectionSingleton":0,"Irfanm\\Belajar\\PHP\\MVC\\App\\ViewTest::testRender":0.003,"Irfanm\\Belajar\\PHP\\MVC\\Repository\\UserRepositoryTest::testSaveSuccess":0.222}}
