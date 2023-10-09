@@ -2,6 +2,8 @@
 
 namespace Irfanm\Belajar\PHP\MVC\Service;
 
+use Exception;
+use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Domain\User;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
@@ -24,21 +26,31 @@ class UserService
     {
         $this->validateUserRegistrationRequest($request);
 
-        $user = $this->userRepository->findById($request->id);
-        if($user != null){
-            throw new ValidationException("User Id sudah ada !");
+        try {
+            Database::beginTransaction();
+            $user = $this->userRepository->findById($request->id);
+            if($user != null){
+                throw new ValidationException("User Id sudah ada !");
+            }
+
+            $user = new User();
+            $user->id = $request->id;
+            $user->name = $request->name;
+            $user->password = password_hash($request->password, PASSWORD_BCRYPT);
+
+            $this->userRepository->save($user);
+
+            $response = new UserRegisterResponse();
+            $response->user = $user;
+
+            Database::commitTransactiion();
+            return $response;
+
+        }catch(Exception $exception){
+            Database::rollbackTransaction();
+            throw $exception;
         }
 
-        $user = new User();
-        $user->id = $request->id;
-        $user->name = $request->name;
-        $user->password = password_hash($request->password, PASSWORD_BCRYPT);
-
-        $this->userRepository->save($user);
-
-        $response = new UserRegisterResponse();
-        $response->user = $user;
-        return $response;
     }
 
     private function validateUserRegistrationRequest(UserRegisterRequest $request)
