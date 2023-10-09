@@ -3,7 +3,7 @@
         'name' => 'irfanm/php-login-management',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'e8d5d5ba812b0d2804fe8add7bb99a38d997338f',
+        'reference' => 'fc3ebb01cfb16f24dcdf043dacc4b5836bd5657b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'irfanm/php-login-management' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'e8d5d5ba812b0d2804fe8add7bb99a38d997338f',
+            'reference' => 'fc3ebb01cfb16f24dcdf043dacc4b5836bd5657b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
