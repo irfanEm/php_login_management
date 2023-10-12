@@ -6,6 +6,8 @@ use Exception;
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Domain\User;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
+use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
+use Irfanm\Belajar\PHP\MVC\Model\UserLoginResponse;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterResponse;
 use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
@@ -58,7 +60,36 @@ class UserService
         if($request->id == null || $request->name == null || $request->password == null || 
         trim($request->id) == "" || trim($request->name) == "" || trim($request->password) == "")
         {
-            throw new ValidationException("id, name, password tidak boleh kosong !");
+            throw new ValidationException("Id, Name, dan Password wajib diisi !");
+        }
+    }
+
+    public function login(UserLoginRequest $request): UserLoginResponse
+    {
+        $this->validateUserLoginRequest($request);
+
+        $user = $this->userRepository->findById($request->id);
+        if($user == null)
+        {
+            throw new ValidationException("Id atau password salah.");
+        }
+
+        if(password_verify($request->password, $user->password))
+        {
+            $response = new UserLoginResponse();
+            $response->user = $user;
+            return $response;
+        }else{
+            throw new ValidationException("Id atau password salah.");
+        }
+    }
+
+    private function validateUserLoginRequest(UserLoginRequest $request)
+    {
+        if($request->id == null || $request->password == null || 
+        trim($request->id) == "" || trim($request->password) == "")
+        {
+            throw new ValidationException("Id dan Password wajib diisi !");
         }
     }
 }
