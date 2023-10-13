@@ -4,17 +4,27 @@ namespace Irfanm\Belajar\PHP\MVC\Repository;
 
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Domain\Session;
+use Irfanm\Belajar\PHP\MVC\Domain\User;
 use PHPUnit\Framework\TestCase;
 
 class SessionRepositoryTest extends TestCase
 {
     private SessionRepository $sessionRepository;
+    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
-        $this->sessionRepository = new  SessionRepository(Database::getConnection());
+        $this->userRepository = new UserRepository(Database::getConnection());
+        $this->sessionRepository = new SessionRepository(Database::getConnection());
 
         $this->sessionRepository->deleteAll();
+        $this->userRepository->deleteAll();
+
+        $user = new User();
+        $user->id = "blqs2103";
+        $user->name = "Balqis Farah Anabila";
+        $user->password = "blqs2103";
+        $this->userRepository->save($user);
     }
 
     public function testSaveSuccess()

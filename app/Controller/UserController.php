@@ -7,12 +7,15 @@ use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
+use Irfanm\Belajar\PHP\MVC\Repository\SessionRepository;
 use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
+use Irfanm\Belajar\PHP\MVC\Service\SessionService;
 use Irfanm\Belajar\PHP\MVC\Service\UserService;
 
 class UserController
 {
     private UserService $userService;
+    private SessionService $sessionService;
 
     /**
      * Class constructor.
@@ -22,6 +25,9 @@ class UserController
         $connection = Database::getConnection();
         $userRepository = new UserRepository($connection);
         $this->userService = new UserService($userRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
     public function register()
     {
@@ -61,7 +67,8 @@ class UserController
         $request->password = $_POST['password'];
 
         try {
-            $this->userService->login($request);
+            $response = $this->userService->login($request);
+            $this->sessionService->create($response->user->id);
             View::redirect('/');
         } catch (ValidationException $exception) {
             View::render('User/login', [

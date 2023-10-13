@@ -10,21 +10,36 @@ namespace Irfanm\Belajar\PHP\MVC\App {
 
 }
 
+namespace Irfanm\Belajar\PHP\MVC\Service {
+
+    function setcookie(string $name, string $value){
+
+        echo "$name: $value";
+
+    }
+
+}
+
 namespace Irfanm\Belajar\PHP\MVC\Controller {
 
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Domain\User;
-use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
+    use Irfanm\Belajar\PHP\MVC\Repository\SessionRepository;
+    use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
 
 class UserControllerTest extends TestCase
 {
     private UserController $userController;
     private UserRepository $userRepository;
+    private SessionRepository $sessionRepository;
     
     public function setUp(): void
     {
         $this->userController = new UserController();
+
+        $this->sessionRepository = new SessionRepository(Database::getConnection());
+        $this->sessionRepository->deleteAll();
 
         $this->userRepository = new UserRepository(Database::getConnection());
         $this->userRepository->deleteAll();
@@ -118,6 +133,7 @@ class UserControllerTest extends TestCase
         $this->userController->postLogin();
 
         $this->expectOutputRegex("[Location: /]");
+        $this->expectOutputRegex("[X-PRGHTML-SESSION: ]");
     }
 
     public function testLoginValidationError()
