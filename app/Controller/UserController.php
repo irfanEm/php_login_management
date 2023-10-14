@@ -6,6 +6,7 @@ use Irfanm\Belajar\PHP\MVC\App\View;
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
+use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
 use Irfanm\Belajar\PHP\MVC\Repository\SessionRepository;
 use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
@@ -77,4 +78,49 @@ class UserController
             ]);
         }
     }
+
+    public function logout()
+    {
+        $this->sessionService->destroy();
+        View::redirect('/');
+    }
+
+    public function updateProfile()
+    {
+        $user = $this->sessionService->current();
+
+        View::render('User/profile', [
+            "title" => "Update User Profile",
+            "user" => [
+                'id' => $user->id,
+                'name' => $user->name
+            ]
+        ]);
+    }
+
+    public function postUpdateProfile()
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserProfileUpdateRequest();
+        $request->id = $user->id;
+        $request->name = $_POST['name'];
+
+        try{
+            $this->userService->updateProfile($request);
+            View::redirect('/');
+        }catch(ValidationException $exception){
+
+            View::render('User/profile', [
+                "title" => "Update User Profile",
+                "error" => $exception->getMessage(),
+                "user" => [
+                    'id' => $user->id,
+                    'name' => $_POST['name']
+                ]
+            ]);
+
+        }
+    }
+
 }

@@ -8,6 +8,8 @@ use Irfanm\Belajar\PHP\MVC\Domain\User;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginResponse;
+use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateRequest;
+use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateResponse;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterResponse;
 use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
@@ -90,6 +92,42 @@ class UserService
         trim($request->id) == "" || trim($request->password) == "")
         {
             throw new ValidationException("Id dan Password wajib diisi !");
+        }
+    }
+
+    public function updateProfile(UserProfileUpdateRequest $request): UserProfileUpdateResponse
+    {
+        $this->validateUserProfileUpdateRequest($request);
+
+        try{
+            Database::beginTransaction();
+            
+            $user = $this->userRepository->findById($request->id);
+            if($user == null) {
+                throw new ValidationException("User tidak ditemukan !");
+            }
+
+            $user->name = $request->name;
+            $this->userRepository->update($user);
+
+            Database::commitTransactiion();
+
+            $response = new UserProfileUpdateResponse();
+            $response->user = $user;
+            return $response;
+
+        }catch(\Exception $exception){
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    private function validateUserProfileUpdateRequest(UserProfileUpdateRequest $request)
+    {
+        if($request->id == null || $request->name == null || 
+        trim($request->id) == "" || trim($request->name) == "")
+        {
+            throw new ValidationException("Nama wajib diisi !");
         }
     }
 }
