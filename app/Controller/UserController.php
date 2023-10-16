@@ -6,6 +6,7 @@ use Irfanm\Belajar\PHP\MVC\App\View;
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
+use Irfanm\Belajar\PHP\MVC\Model\UserPasswordUpdateRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
 use Irfanm\Belajar\PHP\MVC\Repository\SessionRepository;
@@ -120,6 +121,41 @@ class UserController
                 ]
             ]);
 
+        }
+    }
+
+    public function updatePassword()
+    {
+        $user = $this->sessionService->current();
+
+        View::render('User/password', [
+            "title" => "Update User Password",
+            "user" => [
+                'id' => $user->id
+            ]
+        ]);
+    }
+
+    public function postUpdatePassword()
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserPasswordUpdateRequest();
+        $request->id = $user->id;
+        $request->oldPassword = $_POST['oldPassword'];
+        $request->newPassword = $_POST['newPassword'];
+
+        try{
+            $this->userService->updatePassword($request);
+            View::redirect('/');
+        }catch(ValidationException $exception){
+            View::render('User/password', [
+                "title" => "Update User Password",
+                "error" => $exception->getMessage(),
+                "user" => [
+                    'id' => $user->id
+                ]
+            ]);
         }
     }
 

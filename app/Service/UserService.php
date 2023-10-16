@@ -8,6 +8,8 @@ use Irfanm\Belajar\PHP\MVC\Domain\User;
 use Irfanm\Belajar\PHP\MVC\Exception\ValidationException;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserLoginResponse;
+use Irfanm\Belajar\PHP\MVC\Model\UserPasswordUpdateRequest;
+use Irfanm\Belajar\PHP\MVC\Model\UserPasswordUpdateResponse;
 use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateRequest;
 use Irfanm\Belajar\PHP\MVC\Model\UserProfileUpdateResponse;
 use Irfanm\Belajar\PHP\MVC\Model\UserRegisterRequest;
@@ -128,6 +130,47 @@ class UserService
         trim($request->id) == "" || trim($request->name) == "")
         {
             throw new ValidationException("Nama wajib diisi !");
+        }
+    }
+
+    public function updatePassword(UserPasswordUpdateRequest $request): UserPasswordUpdateResponse
+    {
+        $this->validationUserPasswordUpdateRequest($request);
+
+        try{
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findById($request->id);
+            if ($user == null) {
+                throw new ValidationException("User Id tidak ditemukan !");
+            }
+
+            if(!password_verify($request->oldPassword, $user->password)) {
+                throw new ValidationException("Password lama salah !");
+            }
+
+            $user->password = password_hash($request->newPassword, PASSWORD_BCRYPT);
+            $this->userRepository->update($user);
+
+            Database::commitTransactiion();
+
+            $response = new UserPasswordUpdateResponse();
+            $response->user = $user;
+            return $response;
+            
+        }catch(\Exception $exception){
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+
+    }
+
+    private function validationUserPasswordUpdateRequest(UserPasswordUpdateRequest $request)
+    {
+        if($request->id == null || $request->oldPassword == null || $request->newPassword == null || 
+        trim($request->id) == "" || trim($request->oldPassword) == "" || trim($request->newPassword) == "")
+        {
+            throw new ValidationException("Id, Old Password, dan New Password wajib diisi !");
         }
     }
 }
