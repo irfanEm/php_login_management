@@ -2,17 +2,14 @@
 
 namespace Irfanm\Belajar\PHP\MVC\Service;
 
+require_once __DIR__ . "/../Helper/helper.php";
+
 use Irfanm\Belajar\PHP\MVC\Config\Database;
 use Irfanm\Belajar\PHP\MVC\Domain\Session;
 use Irfanm\Belajar\PHP\MVC\Domain\User;
 use Irfanm\Belajar\PHP\MVC\Repository\SessionRepository;
 use Irfanm\Belajar\PHP\MVC\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
-
-function setcookie(string $name, string $value)
-{
-    echo "$name: $value";
-}
 
 class SessionServiceTest extends TestCase
 {
