@@ -4,7 +4,7 @@
           <h1 class="display-4 fw-bold lh-1 mb-3">Ahlan wa sahlan <br><?= $model['user']['name'] ?></h1>
           <p class="col-lg-10 fs-4">
             by
-            <a target="_blank" href="https://www.instagram.com/progamer_clp"
+            <a target="_blank" href="https://www.instagram.com/irfan.em"
               >Programmer Cilacap</a
             >
           </p>
