@@ -2,7 +2,9 @@
 
 require __DIR__ . '/tools/php-cs-fixer.d/PhpdocSingleLineVarFixer.php';
 
-return PhpCsFixer\Config::create()
+$header = file_get_contents(__DIR__ . '/tools/php-cs-fixer.d/header.txt');
+
+return (new PhpCsFixer\Config())
     ->registerCustomFixers([
         new \PharIo\CSFixer\PhpdocSingleLineVarFixer()
     ])
@@ -16,7 +18,7 @@ return PhpCsFixer\Config::create()
             'array_syntax'                                  => ['syntax' => 'short'],
             'binary_operator_spaces'                        => [
                 'operators' => [
-                    '='  => 'align_single_space_minimal',
+                    '='  => 'align',
                     '=>' => 'align',
                 ],
             ],
@@ -69,24 +71,26 @@ return PhpCsFixer\Config::create()
             'function_declaration'                          => [
                 'closure_function_spacing' => 'one'
             ],
-            'header_comment'                                => false,
+            'global_namespace_import'                       => [
+                'import_classes'   => true,
+                'import_constants' => true,
+                'import_functions' => true,
+            ],
+            'header_comment'                                => ['header' => $header, 'separate' => 'none'],
             'indentation_type'                              => true,
             'is_null'                                       => true,
             'line_ending'                                   => true,
             'list_syntax'                                   => ['syntax' => 'short'],
             'logical_operators'                             => true,
             'lowercase_cast'                                => true,
-            'lowercase_constants'                           => true,
+            'constant_case'                                 => ['case' => 'lower'],
             'lowercase_keywords'                            => true,
             'lowercase_static_reference'                    => true,
             'magic_constant_casing'                         => true,
-            'method_argument_space'                         => ['ensure_fully_multiline' => true],
+            'method_argument_space'                         => ['on_multiline' => 'ensure_fully_multiline'],
             'modernize_types_casting'                       => true,
             'multiline_comment_opening_closing'             => true,
             'multiline_whitespace_before_semicolons'        => true,
-            'native_constant_invocation'                    => true,
-            'native_function_casing'                        => true,
-            'native_function_invocation'                    => true,
             'new_with_braces'                               => false,
             'no_alias_functions'                            => true,
             'no_alternative_syntax'                         => true,
@@ -106,7 +110,7 @@ return PhpCsFixer\Config::create()
             'no_null_property_initialization'               => true,
             'no_php4_constructor'                           => true,
             'no_short_bool_cast'                            => true,
-            'no_short_echo_tag'                             => true,
+            'echo_tag_syntax'                               => ['format' => 'long'],
             'no_singleline_whitespace_before_semicolons'    => true,
             'no_spaces_after_function_name'                 => true,
             'no_spaces_inside_parenthesis'                  => true,
@@ -153,7 +157,13 @@ return PhpCsFixer\Config::create()
                     'method_private_static',
                 ],
             ],
-            'ordered_imports'                               => true,
+            'ordered_imports' => [
+                'imports_order' => [
+                    PhpCsFixer\Fixer\Import\OrderedImportsFixer::IMPORT_TYPE_CLASS,
+                    PhpCsFixer\Fixer\Import\OrderedImportsFixer::IMPORT_TYPE_CONST,
+                    PhpCsFixer\Fixer\Import\OrderedImportsFixer::IMPORT_TYPE_FUNCTION,
+                ]
+            ],
             'phpdoc_add_missing_param_annotation'           => true,
             'phpdoc_align'                                  => true,
             'phpdoc_annotation_without_dot'                 => true,
@@ -166,7 +176,7 @@ return PhpCsFixer\Config::create()
             'phpdoc_scalar'                                 => true,
             'phpdoc_separation'                             => true,
             'phpdoc_single_line_var_spacing'                => true,
-            'phpdoc_to_comment'                             => false,
+            'phpdoc_to_comment'                             => true,
             'phpdoc_trim'                                   => true,
             'phpdoc_trim_consecutive_blank_line_separation' => true,
             'phpdoc_types'                                  => ['groups' => ['simple', 'meta']],
@@ -188,7 +198,7 @@ return PhpCsFixer\Config::create()
             'single_quote'                                  => true,
             'standardize_not_equals'                        => true,
             'ternary_to_null_coalescing'                    => true,
-            'trailing_comma_in_multiline_array'             => false,
+            'trailing_comma_in_multiline'                   => false,
             'trim_array_spaces'                             => true,
             'unary_operator_spaces'                         => true,
             'visibility_required'                           => [
@@ -206,8 +216,8 @@ return PhpCsFixer\Config::create()
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->files()
+            ->in(__DIR__ . '/build')
             ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
-            ->notName('*.phpt')
             ->notName('autoload.php')
     );
